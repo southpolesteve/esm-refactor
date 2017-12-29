@@ -10,7 +10,8 @@ describe('split', function () {
   it('creates a new folder and sub files', async function () {
     await split('./test/_fixtures/split')
     assert(fs.existsSync('./test/_fixtures/split'))
+    assert(fs.existsSync('./test/_fixtures/split/hello.js'))
+    assert(fs.existsSync('./test/_fixtures/split/world.js'))
     assert(fs.existsSync('./test/_fixtures/split/one.js'))
-    assert(fs.existsSync('./test/_fixtures/split/afunc.js'))
   })
 })

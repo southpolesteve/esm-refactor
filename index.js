@@ -1,15 +1,8 @@
 const j = require('jscodeshift')
-// const runner = require('jscodeshift/dist/runner')
-// const declarationTransform = require('refactoring-codemods/lib/transformers/import-declaration-transform')
-// const relativeTransform = require('refactoring-codemods/lib/transformers/import-relative-transform')
-// const specifierTransform = require('refactoring-codemods/lib/transformers/import-specifier-transform')
+const runner = require('jscodeshift/dist/runner')
 const path = require('path')
 const process = require('process')
 const fs = require('fs-extra-promise')
-
-// function move (source, destination) {
-//   let ast = recast.parse(source)
-// }
 
 async function split (filePath) {
   const fullPath = require.resolve(path.join(process.cwd(), filePath))
@@ -17,26 +10,58 @@ async function split (filePath) {
   const newFolderName = newFolderPath.split('/').pop()
   await fs.ensureDirAsync(newFolderPath)
   const source = await fs.readFileAsync(fullPath, 'utf8')
+
   const ast = j(source)
-  const exprts = ast.find(j.ExportNamedDeclaration)
+  const exportNames = []
+  const createdModules = []
+  const exportPaths = ast.find(j.ExportNamedDeclaration)
 
-  // copy exports into new files
-  exprts.forEach(async path => {
-    const exprt = j(path)
-    const fileName = exprt.find(j.Identifier).at(0).nodes()[0].name + '.js'
-    const newFile = newFolderPath + '/' + fileName
-    await fs.writeFile(newFile, exprt.toSource())
-    console.log(`Created: ${newFile}`)
+  // Get all exports and replace with re-export statement
+  exportPaths.forEach(path => {
+    const name = j(path).find(j.Identifier).nodes()[0].name
+    exportNames.push(name)
+    j(path).replaceWith(`export { ${name} } from './${newFolderName}/${name}'`)
   })
 
-  // replace old exports with re-exports from new files
-  exprts.replaceWith(path => {
-    const exprt = j(path)
-    const name = exprt.find(j.Identifier).at(0).nodes()[0].name
-    return `export { ${name} } from './${newFolderName}/${name}'`
-  })
+  // Copy source as is to new files for each export
+  await Promise.all(exportNames.map(name => {
+    const file = newFolderPath + '/' + name + '.js'
+    createdModules.push({ file, name })
+    return fs.writeFile(file, source)
+  }))
 
+  // Write source back to original file
   await fs.writeFile(fullPath, ast.toSource())
+
+  // Remove all exports from modules except for the single named export
+  for (let module of createdModules) {
+    await runner.run(
+      require.resolve('./transforms/remove-exports-except'),
+      [ module.file ],
+      { except: module.name, runInBand: true, silent: true })
+  }
+
+  // Remove unused imports in new modules
+  await runner.run(
+    require.resolve('./transforms/remove-unused-imports'),
+    [ ...createdModules.map(m => m.file), fullPath ],
+    { runInBand: true, silent: true })
+
+  // Update all new module file relative imports
+  for (let module of createdModules) {
+    await runner.run(
+      require.resolve('refactoring-codemods/lib/transformers/import-relative-transform'),
+      [ module.file ],
+      {
+        prevFilePath: fullPath,
+        nextFilePath: module.file,
+        runInBand: true,
+        silent: true,
+        printOptions: {
+          quote: 'single'
+        }
+      })
+  }
 }
 
 module.exports = { split }
