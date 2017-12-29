@@ -13,8 +13,9 @@ const fs = require('fs-extra-promise')
 
 async function split (filePath) {
   const fullPath = require.resolve(path.join(process.cwd(), filePath))
-  const newFolder = fullPath.split('.js').shift()
-  await fs.ensureDirAsync(newFolder)
+  const newFolderPath = fullPath.split('.js').shift()
+  const newFolderName = newFolderPath.split('/').pop()
+  await fs.ensureDirAsync(newFolderPath)
   const source = await fs.readFileAsync(fullPath, 'utf8')
   const ast = j(source)
   const exprts = ast.find(j.ExportNamedDeclaration)
@@ -23,7 +24,7 @@ async function split (filePath) {
   exprts.forEach(async path => {
     const exprt = j(path)
     const fileName = exprt.find(j.Identifier).at(0).nodes()[0].name + '.js'
-    const newFile = newFolder + '/' + fileName
+    const newFile = newFolderPath + '/' + fileName
     await fs.writeFile(newFile, exprt.toSource())
     console.log(`Created: ${newFile}`)
   })
@@ -32,7 +33,7 @@ async function split (filePath) {
   exprts.replaceWith(path => {
     const exprt = j(path)
     const name = exprt.find(j.Identifier).at(0).nodes()[0].name
-    return `export { ${name} } from './${name}'`
+    return `export { ${name} } from './${newFolderName}/${name}'`
   })
 
   await fs.writeFile(fullPath, ast.toSource())
