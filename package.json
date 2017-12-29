@@ -1,0 +1,22 @@
+{
+  "name": "esm-refactor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "dependencies": {
+    "fs-extra-promise": "^1.0.1",
+    "jscodeshift": "^0.4.0",
+    "recast": "^0.13.0",
+    "refactoring-codemods": "^0.3.2",
+    "yargs": "^10.0.3"
+  },
+  "bin": {
+    "esm": "bin/cli.js"
+  }
+}
