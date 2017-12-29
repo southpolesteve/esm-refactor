@@ -14,7 +14,6 @@ const fs = require('fs-extra-promise')
 async function split (filePath) {
   const fullPath = require.resolve(path.join(process.cwd(), filePath))
   const newFolder = fullPath.split('.js').shift()
-  console.log(fullPath, newFolder)
   await fs.ensureDirAsync(newFolder)
   const source = await fs.readFileAsync(fullPath, 'utf8')
   const ast = j(source)
@@ -25,6 +24,7 @@ async function split (filePath) {
     const exprt = j(path)
     const fileName = exprt.find(j.Identifier).at(0).nodes()[0].name + '.js'
     await fs.writeFile(newFolder + '/' + fileName, exprt.toSource())
+    console.log(`Created: ${newFolder + '/' + fileName}`)
     exprt.replaceWith('test')
   })
 
