@@ -23,9 +23,9 @@ async function split (filePath) {
   exprts.forEach(async path => {
     const exprt = j(path)
     const fileName = exprt.find(j.Identifier).at(0).nodes()[0].name + '.js'
-    await fs.writeFile(newFolder + '/' + fileName, exprt.toSource())
-    console.log(`Created: ${newFolder + '/' + fileName}`)
-    exprt.replaceWith('test')
+    const newFile = newFolder + '/' + fileName
+    await fs.writeFile(newFile, exprt.toSource())
+    console.log(`Created: ${newFile}`)
   })
 
   // replace old exports with re-exports from new files
