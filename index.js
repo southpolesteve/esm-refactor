@@ -20,12 +20,38 @@ async function split (filePath) {
   const ast = j(source)
   const exprts = ast.find(j.ExportNamedDeclaration)
 
-  // copy exports into new files
-  exprts.forEach(async path => {
-    const exprt = j(path)
+  const imports = ast.find(j.ImportDeclaration)
+
+  // copy each export into a new file
+  exprts.forEach(async exportPath => {
+    const exprt = j(exportPath)
     const fileName = exprt.find(j.Identifier).at(0).nodes()[0].name + '.js'
     const newFile = newFolderPath + '/' + fileName
-    await fs.writeFile(newFile, exprt.toSource())
+    let newImports
+
+    // find imports used in this export
+    exprt.find(j.Identifier).forEach((varPath) => {
+      newImports = j(imports.map((path) => {
+        const importVars = path.value.specifiers.map((specifier) => specifier.local.name)
+        return importVars.includes(varPath.value.name) ? path : null
+      }).nodes())
+    })
+
+    // update paths of copied import statements
+    newImports
+      .find(j.Literal)
+      .forEach(p => {
+        p.value.value = path.join('../', p.value.value)
+      })
+
+    // mash used imports and new exports together
+    const newSource = [newImports.toSource(), exprt.toSource()].join('\n')
+
+    // write new file
+    await fs.writeFile(
+      newFile,
+      newSource
+    )
     console.log(`Created: ${newFile}`)
   })
 
