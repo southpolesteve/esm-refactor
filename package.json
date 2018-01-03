@@ -18,8 +18,7 @@
   },
   "scripts": {
     "test": "mocha --timeout 10000",
-    "lint": "eslint ./",
-    "publish": "np"
+    "lint": "eslint ./"
   },
   "dependencies": {
     "fs-extra-promise": "^1.0.1",
