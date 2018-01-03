@@ -1,5 +1,5 @@
 const j = require('jscodeshift')
-const runner = require('jscodeshift/dist/runner')
+const runner = require('jscodeshift/dist/Runner')
 const path = require('path')
 const process = require('process')
 const fs = require('fs-extra-promise')
