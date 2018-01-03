@@ -1,8 +1,22 @@
 {
   "name": "esm-refactor",
+  "description": "A tool for refactoring JavaScript modules",
+  "repository": "southpolesteve/esm-refactor",
   "version": "0.0.8",
   "main": "index.js",
   "license": "MIT",
+  "keywords": [
+    "JavaScript",
+    "modules",
+    "import",
+    "export",
+    "es6",
+    "esm",
+    "cli",
+    "refactor",
+    "es6 modules",
+    "ES modules"
+  ],
   "devDependencies": {
     "eslint": "^4.14.0",
     "eslint-config-prettier": "^2.9.0",
@@ -24,11 +38,14 @@
     "fs-extra-promise": "^1.0.1",
     "jscodeshift": "^0.4.0",
     "ora": "^1.3.0",
-    "recast": "^0.13.0",
     "refactoring-codemods": "^0.3.2",
     "yargs": "^10.0.3"
   },
   "bin": {
     "esm-refactor": "bin/cli.js"
+  },
+  "author": {
+    "name": "Steve Faulkner",
+    "email": "southpolesteve@gmail.com"
   }
 }
