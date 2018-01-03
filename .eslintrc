@@ -1,0 +1,22 @@
+{
+  "env": {
+    "node": true,
+    "mocha": true
+  },
+  "extends": [
+    "standard",
+    "prettier"
+  ],
+  "plugins": [
+    "mocha",
+    "prettier"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "no-var": "error",
+    "mocha/no-skipped-tests": "error",
+    "mocha/no-exclusive-tests": "error",
+    "no-return-await": "error",
+    "space-before-function-paren": 0
+  }
+}
