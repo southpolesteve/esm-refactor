@@ -1,6 +1,6 @@
 const assert = require('assert')
 const fs = require('fs-extra-promise')
-const { split } = require('../index')
+const { split, moveFile } = require('../index')
 
 describe('split', function () {
   beforeEach(async () => {

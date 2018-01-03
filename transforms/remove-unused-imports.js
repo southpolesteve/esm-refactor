@@ -1,5 +1,5 @@
 // Inspired by https://gist.github.com/nemtsov/8f5a6a78268839abaca78ad1fbe8368c
-module.exports = function transformer (file, api, options) {
+module.exports = function (file, api, options) {
   const j = api.jscodeshift
   const root = j(file.source)
 
