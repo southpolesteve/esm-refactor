@@ -5,7 +5,7 @@ const { split, moveFile } = require("../index");
 require("yargs")
   .command(
     "split <file>",
-    "split a file into seperate exports",
+    "split one file into a folder with files for each export",
     yargs => {
       yargs.positional("file", {
         describe: "the file to split",
@@ -18,7 +18,7 @@ require("yargs")
   )
   .command(
     "move-file <source> <target>",
-    "move a file",
+    "move a file with ES modules",
     yargs => {
       yargs.positional("source", {
         describe: "the file to move",
