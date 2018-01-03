@@ -2,7 +2,7 @@
   "name": "esm-refactor",
   "description": "A tool for refactoring JavaScript modules",
   "repository": "southpolesteve/esm-refactor",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "main": "index.js",
   "license": "MIT",
   "keywords": [
