@@ -5,6 +5,11 @@
 Refactoring projects with a lot of ES modules is hard. This tool makes it easier. It is not perfect, but it will do 80% of the work for you. In most cases the linter will help with the last 20%.
 
 
+### Install
+
+`npm install -g esm-refactor`
+
+### Usage
 ```
 esm-refactor [command]
 
