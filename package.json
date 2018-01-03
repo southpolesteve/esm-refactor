@@ -17,7 +17,7 @@
     "prettier": "^1.9.2"
   },
   "scripts": {
-    "test": "mocha",
+    "test": "mocha --timeout 10000",
     "lint": "eslint ./"
   },
   "dependencies": {
