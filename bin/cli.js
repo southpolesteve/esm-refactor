@@ -3,6 +3,7 @@
 const { split, moveFile } = require("../index");
 
 require("yargs")
+  .strict()
   .command(
     "split <file>",
     "split one file into a folder with files for each export",
